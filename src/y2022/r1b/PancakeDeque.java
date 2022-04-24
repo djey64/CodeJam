@@ -1,4 +1,4 @@
-package r1b;
+package y2022.r1b;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
