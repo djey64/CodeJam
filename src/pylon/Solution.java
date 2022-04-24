@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class Solution {
 			boolean solutionFound = false;
 
 			Set<Pair<Integer, Integer>> cells = new LinkedHashSet<>();
-			LinkedHashSet<Pair<Integer, Integer>> visited = new LinkedHashSet<>();
+			List<Pair<Integer, Integer>> visited = new ArrayList<>();
 
 			for(int rc = 1 ; rc <= r; rc++) {
 				for(int cc = 1 ; cc <= c; cc++) {
@@ -38,15 +37,7 @@ public class Solution {
 			cells.remove(current);
 			visited.add(current);
 
-			while(true) {
-				Optional<Pair<Integer, Integer>> nextMove = getNextMove(cells, visited, current, r, c);
-				if(nextMove.isPresent()) {
-					current = nextMove.get();
-					visited.add(current);
-				} else break;
-			}
-
-			if(cells.size() == visited.size()) {
+			if(solutionFound) {
 				// Finished
 				System.out.println("Case #" + i + ": POSSIBLE");
 				for(Pair<Integer, Integer> cell : visited) {
@@ -60,62 +51,6 @@ public class Solution {
 				}
 			}
 		}
-	}
-
-	private static Optional<Pair<Integer,Integer>> getNextMove(Set<Pair<Integer, Integer>> cells, Set<Pair<Integer, Integer>> visited, Pair<Integer, Integer> cell, int r, int c) {
-		List<Pair<Integer,Integer>> moves = getPossibleMoves(cell, r, c).stream().filter(m -> !visited.contains(m)).collect(Collectors.toList());
-		
-		if(!moves.isEmpty()) {
-			Pair<Integer, Integer> best = moves.get(0);
-			long bestDegree = getDegree(cells, visited, best, r, c);
-			for(Pair<Integer, Integer> m : moves) {
-				long degree = getDegree(cells, visited, m, r, c);
-				if(degree < bestDegree) {
-					best = m;
-					bestDegree = degree;
-				}
-			}
-			
-			return Optional.of(best);
-		}
-		return Optional.empty();
-	}	
-	
-	private static long getDegree(Set<Pair<Integer, Integer>> cells, Set<Pair<Integer, Integer>> visited,
-			Pair<Integer, Integer> cell, int r, int c) {
-		List<Pair<Integer, Integer>> adjs = getAdjacants(cell, r, c);
-		return adjs.stream().filter(adj -> visited.contains(adj)).count();
-	}
-
-	private static List<Pair<Integer, Integer>> getAdjacants(Pair<Integer, Integer> cell, int r, int c) {
-		List<Pair<Integer,Integer>> moves = new ArrayList<>();
-		
-		moves.add(Pair.of(cell.first + 0, cell.second + 1));
-		moves.add(Pair.of(cell.first + 0, cell.second - 1));
-		moves.add(Pair.of(cell.first + 1, cell.second + 1));
-		moves.add(Pair.of(cell.first + 1, cell.second + 0));
-		moves.add(Pair.of(cell.first + 1, cell.second - 1));
-		moves.add(Pair.of(cell.first - 1, cell.second + 1));
-		moves.add(Pair.of(cell.first - 1, cell.second + 0));
-		moves.add(Pair.of(cell.first - 1, cell.second - 1));
-		
-		return moves.stream().filter(o -> o.first > 0 && o.second > 0 && o.first <= r && o.second <= c).collect(Collectors.toList());
-		
-	}
-
-	private static List<Pair<Integer,Integer>> getPossibleMoves(Pair<Integer, Integer> cell, int r, int c) {
-		List<Pair<Integer,Integer>> moves = new ArrayList<>();
-		
-		moves.add(Pair.of(cell.first + 1, cell.second + 2));
-		moves.add(Pair.of(cell.first + 2, cell.second + 1));
-		moves.add(Pair.of(cell.first - 1, cell.second - 2));
-		moves.add(Pair.of(cell.first - 2, cell.second - 1));
-		moves.add(Pair.of(cell.first - 1, cell.second + 2));
-		moves.add(Pair.of(cell.first - 2, cell.second + 1));
-		moves.add(Pair.of(cell.first + 1, cell.second - 2));
-		moves.add(Pair.of(cell.first + 2, cell.second - 1));
-		
-		return moves.stream().filter(o -> o.first > 0 && o.second > 0 && o.first <= r && o.second <= c).collect(Collectors.toList());
 	}
 	
 	/**
