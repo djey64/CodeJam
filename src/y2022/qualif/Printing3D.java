@@ -1,4 +1,4 @@
-package y2022;
+package y2022.qualif;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
